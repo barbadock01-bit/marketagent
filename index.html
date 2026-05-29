@@ -4661,6 +4661,97 @@ function checkSavedLogin(){
   }catch(e){}
 }
 
+
+// ── PRODUTO MODAL ──
+function openAddProd(){
+  var m=document.getElementById('modal-prod');
+  if(m)m.style.display='flex';
+}
+
+function closeModal(id){
+  var m=document.getElementById(id||'modal-prod');
+  if(m)m.style.display='none';
+}
+
+function saveProd(){
+  var nome=document.getElementById('mp-nome').value.trim();
+  if(!nome){toast('Nome obrigatorio','err');return;}
+  var prod={
+    id:Date.now(),
+    nome:nome,
+    cat:document.getElementById('mp-cat').value,
+    plat:document.getElementById('mp-plat').value,
+    preco:parseFloat(document.getElementById('mp-preco').value)||0,
+    custo:parseFloat(document.getElementById('mp-custo').value)||0,
+    emb:parseFloat(document.getElementById('mp-emb').value)||0,
+    vendas:parseInt(document.getElementById('mp-vendas').value)||0,
+    ico:document.getElementById('mp-ico')?document.getElementById('mp-ico').value:'📦'
+  };
+  products.push(prod);
+  closeModal('modal-prod');
+  // Reset form
+  ['mp-nome','mp-preco','mp-custo','mp-emb','mp-vendas'].forEach(function(id){
+    var el=document.getElementById(id);if(el)el.value='';
+  });
+  renderProds();
+  saveData();
+  updateDash();
+  populateEscProdSel();
+  toast('Produto cadastrado!');
+}
+
+function renderProds(){
+  var el=document.getElementById('prod-list');
+  if(!el)return;
+  if(!products.length){
+    el.innerHTML='<div class="empty"><div class="empty-ico">📦</div><div class="empty-txt">Nenhum produto cadastrado ainda.<br>Clique em "+ Novo Produto" para começar!</div></div>';
+    return;
+  }
+  var html='';
+  products.forEach(function(p){
+    var taxa=p.plat==='shopee'?(p.preco<80?8/Math.max(p.preco,1):p.preco<200?0.10:0.12):p.plat==='ml'?0.17:0.22;
+    var lucroUnit=(p.preco||0)*(p.preco<80&&p.plat==='shopee'?1:1-taxa)-(p.preco<80&&p.plat==='shopee'?8:0)-(p.custo||0)-(p.emb||0);
+    var margem=p.preco>0?(lucroUnit/p.preco)*100:0;
+    var mColor=margem>=30?'var(--green2)':margem>=15?'var(--yellow)':'var(--red2)';
+    var platLabel=p.plat==='shopee'?'🟠 Shopee':p.plat==='ml'?'🟡 ML':'🟠 Amazon';
+    html+='<div class="card" style="border-left:3px solid '+mColor+';margin-bottom:10px">';
+    html+='<div style="display:flex;align-items:center;gap:10px">';
+    html+='<div style="font-size:24px">'+(p.ico||'📦')+'</div>';
+    html+='<div style="flex:1">';
+    html+='<div style="font-size:13px;font-weight:700;color:var(--text)">'+p.nome+'</div>';
+    html+='<div style="font-size:10px;color:var(--muted)">'+platLabel+' · '+p.cat+'</div>';
+    html+='</div>';
+    html+='<div style="text-align:right">';
+    html+='<div style="font-size:14px;font-weight:800;color:var(--text)">'+fmt(p.preco)+'</div>';
+    html+='<div style="font-size:10px;color:'+mColor+'">Lucro: '+fmt(lucroUnit)+'</div>';
+    html+='</div>';
+    html+='</div>';
+    html+='<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:8px">';
+    html+='<div style="background:var(--s3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--muted)">CUSTO</div><div style="font-size:12px;font-weight:700;color:var(--text)">'+fmt(p.custo)+'</div></div>';
+    html+='<div style="background:var(--s3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--muted)">VENDAS/MÊS</div><div style="font-size:12px;font-weight:700;color:var(--blue2)">'+( p.vendas||0)+'</div></div>';
+    html+='<div style="background:var(--s3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--muted)">MARGEM</div><div style="font-size:12px;font-weight:700;color:'+mColor+'">'+margem.toFixed(0)+'%</div></div>';
+    html+='<div style="background:var(--s3);border-radius:6px;padding:6px;text-align:center"><div style="font-size:9px;color:var(--muted)">LUCRO/MÊS</div><div style="font-size:12px;font-weight:700;color:var(--green2)">'+fmt(lucroUnit*(p.vendas||0))+'</div></div>';
+    html+='</div>';
+    html+='<div style="display:flex;gap:6px;margin-top:8px">';
+    html+='<button class="btn btn-s" onclick="editProd('+p.id+')" style="flex:1">✏️ Editar</button>';
+    html+='<button class="btn" onclick="analyzeProduct('+p.id+')" style="flex:1;background:var(--s3);color:var(--text2)">📊 Analisar</button>';
+    html+='<button class="btn" onclick="delProd('+p.id+')" style="background:rgba(244,67,54,.15);color:var(--red2);border:1px solid rgba(244,67,54,.3)">🗑️</button>';
+    html+='</div>';
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function delProd(id){
+  if(!confirm('Remover este produto?'))return;
+  products=products.filter(function(p){return p.id!==id;});
+  renderProds();
+  updateDash();
+  saveData();
+  populateEscProdSel();
+  toast('Produto removido');
+}
+
 window.addEventListener("load", initApp);
 </script>
 </div></div></div></body>
