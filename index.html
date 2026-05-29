@@ -4166,11 +4166,10 @@ function hideTip(){var tip=document.getElementById('global-tip');if(tip)tip.styl
 
 // ── ATACADO ──────────────────────────────────────────────
 function tabAtacado(id,btn){
-  document.querySelectorAll('[id^="atk-"]').forEach(function(p){if(p.classList.contains('tab-panel'))p.classList.remove('active')});
+  document.querySelectorAll('#panel-atacado .tab-panel').forEach(function(p){p.classList.remove('active')});
   var el=document.getElementById('atk-'+id);if(el)el.classList.add('active');
   if(btn){var par=btn.closest('.tabs');if(par)par.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');}
 }
-
 function calcAtacado(){
   var custo=parseFloat(document.getElementById('atk-custo').value)||0;
   var varejo=parseFloat(document.getElementById('atk-varejo').value)||0;
@@ -4466,11 +4465,10 @@ function populateEscProdSel(){
 
 // ── FILAMENTO ──
 function tabFil(id,btn){
-  document.querySelectorAll('[id^="fil-"]').forEach(function(p){if(p.classList.contains('tab-panel'))p.classList.remove('active')});
+  document.querySelectorAll('#panel-filamento .tab-panel').forEach(function(p){p.classList.remove('active')});
   var el=document.getElementById('fil-'+id);if(el)el.classList.add('active');
   if(btn){var par=btn.closest('.tabs');if(par)par.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');}
 }
-
 function updateFilPreco(){
   var sel=document.getElementById('filc-tipo');
   var inp=document.getElementById('filc-preco');
