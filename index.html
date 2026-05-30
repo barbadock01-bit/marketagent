@@ -1966,7 +1966,7 @@ textarea{resize:vertical;min-height:60px}
 <!-- end panels -->
 <!-- end app -->
 <!-- MODAL PRODUTO -->
-<div class="modal-overlay" id="modal-prod">
+<div class="modal-overlay" id="modal-prod" style="display:none">
 <div class="modal">
 <div class="modal-hdr">
 <div class="modal-title">📦 Cadastrar Produto</div>
@@ -4742,8 +4742,10 @@ function checkSavedLogin(){
 // ── PRODUTO MODAL ──
 function openAddProd(){
   var m=document.getElementById('modal-prod');
-  if(m)m.style.display='flex';
+  if(m){m.style.display='flex';}
+  editingProdId=null;
 }
+
 
 function closeModal(id){
   var m=document.getElementById(id||'modal-prod');
