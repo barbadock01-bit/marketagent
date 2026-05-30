@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -8,7 +8,7 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden}
-body{font-family:'Segoe UI',system-ui,sans-serif;background:#07090f;color:#e2e8f0;display:flex;flex-direction:column;font-size:13px;line-height:1.5}
+body{transition:background .2s,color .2s;font-family:'Segoe UI',system-ui,sans-serif;background:#07090f;color:#e2e8f0;display:flex;flex-direction:column;font-size:13px;line-height:1.5}
 :root{
   --bg:#07090f;--s1:#0c0f1a;--s2:#111520;--s3:#161c2e;--s4:#1c2438;--s5:#222d45;
   --border:rgba(255,255,255,.07);--border2:rgba(255,255,255,.12);--border3:rgba(255,255,255,.18);
@@ -21,6 +21,12 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:#07090f;color:#e2e8f
   --red:#f44336;--red2:#ef9a9a;--yellow:#ffd600;--blue:#2196f3;--blue2:#64b5f6;
   --r6:6px;--r8:8px;--r10:10px;--r12:12px;--r16:16px;
   --sh1:0 1px 3px rgba(0,0,0,.4);--sh2:0 4px 12px rgba(0,0,0,.5);--sh3:0 8px 24px rgba(0,0,0,.6);
+}
+[data-theme='light']{
+  --bg:#f0f4f8;--s1:#ffffff;--s2:#f8fafc;--s3:#edf2f7;--s4:#e2e8f0;--s5:#e2e8f0;
+  --border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.15);--border3:rgba(0,0,0,.2);
+  --text:#1a202c;--text2:#4a5568;--muted:#a0aec0;
+  --sh1:0 1px 3px rgba(0,0,0,.1);--sh2:0 4px 12px rgba(0,0,0,.15);
 }
 .hdr{height:50px;background:var(--s1);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 14px;gap:8px;flex-shrink:0;z-index:100;position:relative}
 .hdr::after{content:"";position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--shopee),var(--ml),var(--amz),var(--p3d));opacity:.5}
@@ -255,6 +261,7 @@ textarea{resize:vertical;min-height:60px}
 <span class="hdr-badge hb-live">● 2026</span>
 <div class="hdr-sp"></div>
 <span class="hdr-clock" id="clock">00:00</span>
+<button onclick="toggleTheme()" id="theme-btn" title="Alternar tema" style="background:none;border:1px solid var(--border2);border-radius:8px;color:var(--text2);cursor:pointer;padding:5px 10px;font-size:13px;margin-left:6px">🌙</button>
 <div id="hdr-user" style="display:none;align-items:center;gap:8px;margin-left:12px">
 <div id="hdr-avatar" onclick="showUserMenu()" style="width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--shopee),var(--p3d));display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;cursor:pointer" title="Minha conta">?</div>
 <span id="hdr-username" style="font-size:11px;color:var(--text2);max-width:100px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"></span>
@@ -1136,6 +1143,7 @@ textarea{resize:vertical;min-height:60px}
 <div class="pg-hdr">
 <div class="pg-ico pg-ico-g">✅</div>
 <div><div class="pg-title">Checklist de Anúncio Perfeito</div><div class="pg-sub">Shopee · Mercado Livre · Amazon BR · Impressão 3D</div></div>
+<button class="btn btn-s" style="margin-left:auto" onclick="resetChecklist()">🔄 Resetar</button>
 </div>
 <div class="tabs">
 <button class="tab-btn active" onclick="tabCL('s',this)">🟠 Shopee</button>
@@ -2318,11 +2326,24 @@ setInterval(updateClock,1000);updateClock();
 function nav(id){document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("active")});document.querySelectorAll(".snav-btn").forEach(function(b){b.classList.remove("active")});var p=document.getElementById("panel-"+id),b=document.getElementById("nb-"+id);if(p)p.classList.add("active");if(b)b.classList.add("active");}
 function toast(msg,type){type=type||"ok";var icons={ok:"✅",err:"❌",info:"ℹ️"};var wrap=document.getElementById("toasts");var t=document.createElement("div");t.className="toast "+type;t.innerHTML="<span>"+icons[type]+"</span><span>"+msg+"</span>";wrap.appendChild(t);setTimeout(function(){t.style.animation="toastIn .25s ease reverse";setTimeout(function(){t.remove()},250)},3000);}
 function switchTabs(prefix,id,btn){document.querySelectorAll("[id^=\""+prefix+"\"]").forEach(function(p){p.classList.remove("active")});var el=document.getElementById(prefix+id);if(el)el.classList.add("active");if(btn){var par=btn.closest(".tabs");if(par)par.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active")});btn.classList.add("active");}}
-function tabCalc(id,btn){switchTabs("calc-",id,btn);}
-function tabCat(id,btn){switchTabs("cats-",id,btn);}
+function tabCalc(id,btn){
+  document.querySelectorAll('#panel-calc .tab-panel').forEach(function(p){p.classList.remove('active')});
+  var el=document.getElementById('calc-'+id);if(el)el.classList.add('active');
+  if(btn){var par=btn.closest('.tabs');if(par)par.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');}
+}
+function tabCat(id,btn){
+  document.querySelectorAll('#panel-cats .tab-panel').forEach(function(p){p.classList.remove('active')});
+  var el=document.getElementById('cat-'+id);if(el)el.classList.add('active');
+  if(btn){var par=btn.closest('.tabs');if(par)par.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');}
+}
 function tab3d(id,btn){switchTabs("tab-",id,btn);}
 function tabSEO(id,btn){switchTabs("seo-",id,btn);}
-function tabCL(id,btn){document.querySelectorAll('[id$="-wrap"]').forEach(function(p){if(p.id.startsWith("cl-"))p.classList.remove("active")});var wrap=document.getElementById("cl-"+id+"-wrap");if(wrap)wrap.classList.add("active");if(btn){var par=btn.closest(".tabs");if(par)par.querySelectorAll(".tab-btn").forEach(function(b){b.classList.remove("active")});btn.classList.add("active");}}
+function tabCL(id,btn){
+  document.querySelectorAll('#panel-checklist .tab-panel').forEach(function(p){p.classList.remove('active')});
+  var wrap=document.getElementById('cl-'+id+'-wrap');
+  if(wrap)wrap.classList.add('active');
+  if(btn){var par=btn.closest('.tabs');if(par)par.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});btn.classList.add('active');}
+}
 function tabFiscal(id,btn){switchTabs("fiscal-",id,btn);}
 function fmt(v){return "R$"+v.toFixed(2).replace(".",",")}
 function fmtPct(v){return v.toFixed(1).replace(".",",")+"%"}
@@ -2495,45 +2516,51 @@ function updateComp(){
 }
 
 function calcPrecoMin(){
-  var cost=parseFloat(document.getElementById("pm-cost").value)||0;
-  var pack=parseFloat(document.getElementById("pm-pack").value)||0;
-  var frete=parseFloat(document.getElementById("pm-frete").value)||0;
-  var margin=parseFloat(document.getElementById("pm-margin").value)||30;
-  var plat=document.getElementById("pm-plat").value;
+  var cost=parseFloat(document.getElementById('pm-cost').value)||0;
+  var pack=parseFloat(document.getElementById('pm-pack').value)||0;
+  var frete=parseFloat(document.getElementById('pm-frete').value)||0;
+  var margin=parseFloat(document.getElementById('pm-margin').value)||30;
+  var plat=document.getElementById('pm-plat').value;
   var totalCost=cost+pack+frete;
-  if(!totalCost){toast("Informe pelo menos o custo do produto","err");return;}
-  var feeRate=0.20,feeFixed=4;
-  if(plat==="shopee_cnpj"){feeRate=0.20;feeFixed=4;}
-  else if(plat==="shopee_cpf"){feeRate=0.20;feeFixed=7;}
-  else if(plat==="ml_classico"){feeRate=0.14;feeFixed=0;}
-  else if(plat==="ml_premium"){feeRate=0.17;feeFixed=0;}
-  else if(plat==="amz_fba"){feeRate=0.15;feeFixed=8.50;}
-  else if(plat==="amz_fbm"){feeRate=0.15;feeFixed=14;}
-  var marginRate=margin/100;
-  var denom=1-feeRate-marginRate;
-  if(denom<=0){toast("Margem muito alta para esta plataforma","err");return;}
-  var minPrice=(totalCost+feeFixed)/denom;
-  var fees=minPrice*feeRate+feeFixed;
-  var lucro=minPrice-fees-totalCost;
-  var html="<div class=\"card\" style=\"margin-top:0\">";
-  html+="<div class=\"card-title\">🎯 Preço Mínimo Calculado</div>";
-  html+="<div style=\"background:var(--s1);border-radius:8px;padding:16px;text-align:center;margin-bottom:12px\">";
-  html+="<div style=\"font-size:10px;color:var(--muted);text-transform:uppercase;font-weight:700\">PREÇO MÍNIMO DE VENDA</div>";
-  html+="<div style=\"font-size:32px;font-weight:900;color:var(--green2);margin:6px 0\">"+fmt(minPrice)+"</div>";
-  html+="<div style=\"font-size:11px;color:var(--muted)\">Para margem de "+margin+"% na plataforma selecionada</div>";
-  html+="</div>";
-  html+="<div class=\"res-grid\">";
-  html+="<div class=\"res-item\"><div class=\"res-lbl\">Custo Total</div><div class=\"res-val c-red\">"+fmt(totalCost)+"</div></div>";
-  html+="<div class=\"res-item\"><div class=\"res-lbl\">Taxas Plataforma</div><div class=\"res-val c-red\">"+fmt(fees)+"</div></div>";
-  html+="<div class=\"res-item hl\"><div class=\"res-lbl\">Lucro Líquido</div><div class=\"res-val c-green\">"+fmt(lucro)+"</div></div>";
-  html+="<div class=\"res-item hl\"><div class=\"res-lbl\">Margem Real</div><div class=\"res-val c-green\">"+fmtPct(margin)+"</div></div>";
-  html+="</div>";
-  html+="<div class=\"alert alert-info\" style=\"margin-top:8px\">💡 Arredonde para: <strong>"+fmt(Math.ceil(minPrice*10)/10)+"</strong> ou <strong>"+fmt(Math.ceil(minPrice))+"</strong></div>";
-  html+="</div>";
-  document.getElementById("pm-result").innerHTML=html;
-  toast("Preço mínimo calculado!");
+  if(!totalCost){toast('Informe pelo menos o custo do produto','err');return;}
+  // Correct 2026 rates
+  var feeRate=0,feeFixed=0;
+  if(plat==='shopee_cnpj'){feeFixed=8;feeRate=0;}
+  else if(plat==='shopee_cpf'){feeFixed=4;feeRate=0;}
+  else if(plat==='ml_classico'){feeRate=0.14;feeFixed=0;}
+  else if(plat==='ml_premium'){feeRate=0.17;feeFixed=0;}
+  else{feeRate=0.10;feeFixed=2;}
+  // Formula: preco = (totalCost + feeFixed) / (1 - feeRate - margin/100)
+  var precoMin=(totalCost+feeFixed)/(1-feeRate-margin/100);
+  if(precoMin<=0||!isFinite(precoMin)){toast('Margem muito alta, impossivel calcular','err');return;}
+  var feeVal=precoMin*feeRate+feeFixed;
+  var lucro=precoMin-feeVal-totalCost;
+  var margemReal=lucro/precoMin*100;
+  var mColor=margemReal>=30?'var(--green2)':margemReal>=15?'var(--yellow)':'var(--red2)';
+  var platNames={shopee_cnpj:'Shopee CNPJ/MEI',shopee_cpf:'Shopee CPF',ml_classico:'ML Classico',ml_premium:'ML Premium',amazon:'Amazon'};
+  var html='<div class="card">';
+  html+='<div class="card-title">📊 Preço Mínimo — '+platNames[plat]+'</div>';
+  html+='<div style="text-align:center;background:var(--s3);border-radius:10px;padding:16px;margin-bottom:12px">';
+  html+='<div style="font-size:11px;color:var(--muted);margin-bottom:4px">PREÇO MÍNIMO SUGERIDO</div>';
+  html+='<div style="font-size:32px;font-weight:900;color:var(--shopee)">'+fmt(precoMin)+'</div>';
+  html+='<div style="font-size:10px;color:var(--muted);margin-top:4px">Para ter '+margin+'% de margem</div>';
+  html+='</div>';
+  var rows=[
+    ['Custo de produção',fmt(cost),'var(--text)'],
+    ['Embalagem',fmt(pack),'var(--text)'],
+    ['Frete',fmt(frete),'var(--text)'],
+    ['Taxa da plataforma',fmt(feeVal),'var(--red2)'],
+    ['Lucro líquido',fmt(lucro),'var(--green2)'],
+    ['Margem real',margemReal.toFixed(1)+'%',mColor]
+  ];
+  rows.forEach(function(r){
+    html+='<div class="res-row"><span class="res-lbl">'+r[0]+'</span><span class="res-val" style="color:'+r[2]+'">'+r[1]+'</span></div>';
+  });
+  html+='<div class="alert alert-info" style="margin-top:10px">💡 Preços psicológicos: R$'+Math.ceil(precoMin/5)*5-0.10+' ou R$'+Math.ceil(precoMin/10)*10-0.10+'</div>';
+  html+='</div>';
+  document.getElementById('pm-result').innerHTML=html;
+  toast('Preço mínimo calculado!');
 }
-
 
 function selPrinter(el,name,watts,price,vol,speed){
   document.querySelectorAll(".pcard").forEach(function(c){c.classList.remove("sel")});
@@ -2855,7 +2882,7 @@ function buildSEO(){
   var cor=document.getElementById('seo-cor').value.trim();
   var tam=document.getElementById('seo-tam').value.trim();
   var dif=document.getElementById('seo-dif').value.trim();
-  if(!prod){showToast('Informe o nome do produto!','error');return;}
+  if(!prod){toast('Informe o nome do produto!','err');return;}
   seoAutoKeywords();
   var kws=seoKwList();
   var platName=plat==='shopee'?'Shopee':plat==='ml'?'Mercado Livre':'Amazon BR';
@@ -3281,9 +3308,37 @@ function buildChecklists(){
       return "<div class=\"cl-item\" onclick=\"clk(this,\'"+key+"\')\"><div class=\"cl-box\">✓</div><div><div class=\"cl-lbl\">"+item[0]+"</div><div class=\"cl-desc\">"+item[1]+"</div></div></div>";
     }).join("");
   });
+
+  // Restore saved state
+  try{
+    var saved=localStorage.getItem('map_checklist');
+    if(saved){
+      var state=JSON.parse(saved);
+      ['s','m','a','p3'].forEach(function(k){
+        if(!state[k])return;
+        var items=document.querySelectorAll('#cl-'+k+' .cl-item');
+        state[k].forEach(function(done,i){
+          if(done&&items[i])items[i].classList.add('done');
+        });
+        updateCLProgress(k);
+      });
+    }
+  }catch(e){}
 }
 
-function clk(el,key){el.classList.toggle("done");updateCLProgress(key);}
+function clk(el,key){
+  el.classList.toggle('done');
+  updateCLProgress(key);
+  // Save checklist state
+  try{
+    var state={};
+    ['s','m','a','p3'].forEach(function(k){
+      var items=document.querySelectorAll('#cl-'+k+' .cl-item');
+      state[k]=Array.from(items).map(function(i){return i.classList.contains('done');});
+    });
+    localStorage.setItem('map_checklist',JSON.stringify(state));
+  }catch(e){}
+}
 
 function updateCLProgress(key){
   var items=document.querySelectorAll("#cl-"+key+" .cl-item");
@@ -4432,8 +4487,30 @@ function loadData(){
   }catch(e){}
 }
 
+function toggleTheme(){
+  var html=document.documentElement;
+  var isDark=html.getAttribute('data-theme')==='dark'||!html.getAttribute('data-theme');
+  html.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-btn').textContent=isDark?'☀️':'🌙';
+  try{localStorage.setItem('map_theme',isDark?'light':'dark');}catch(e){}
+}
+function loadTheme(){
+  try{
+    var t=localStorage.getItem('map_theme');
+    if(t){document.documentElement.setAttribute('data-theme',t);document.getElementById('theme-btn').textContent=t==='dark'?'☀️':'🌙';}
+  }catch(e){}
+}
+
+function resetChecklist(){
+  if(!confirm('Resetar todo o checklist?'))return;
+  try{localStorage.removeItem('map_checklist');}catch(e){}
+  document.querySelectorAll('.cl-item').forEach(function(i){i.classList.remove('done');});
+  ['s','m','a','p3'].forEach(function(k){updateCLProgress(k);});
+  toast('Checklist resetado!');
+}
 function initApp(){
   checkSavedLogin();
+  loadTheme();
   buildCatGrids();
   buildChecklists();
   loadData();
