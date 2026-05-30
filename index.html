@@ -2918,7 +2918,7 @@ function buildSEO(){
   var titleColor=titleLen<=titleLimit*0.8?'var(--green2)':titleLen<=titleLimit?'var(--yellow2)':'var(--red2)';
   // Build copy buttons using data attributes to avoid quote nesting
   function copyBtn(targetId){
-    return '<button onclick="var el=document.getElementById(\''+targetId+'\');if(el){navigator.clipboard.writeText(el.textContent);showToast(\'Copiado!\',\'success\');}" style="background:none;border:none;cursor:pointer;color:var(--p1);font-size:11px">📋 Copiar</button>';
+    return '<button onclick="var el=document.getElementById(\''+targetId+'\');if(el){navigator.clipboard.writeText(el.textContent);toast(\'Copiado!\',\'success\');}" style="background:none;border:none;cursor:pointer;color:var(--p1);font-size:11px">📋 Copiar</button>';
   }
   var r=document.getElementById('seo-result');
   r.innerHTML='<div class="card" style="margin-bottom:10px">'+
@@ -2949,7 +2949,7 @@ function buildSEO(){
     '</div>'+
     '</div>'+
     '</div>';
-  showToast('SEO gerado para '+platName+'!','success');
+  toast('SEO gerado para '+platName+'!');
 }
 
 
@@ -2974,7 +2974,7 @@ function analyzeProduct(id){
 }
 
 function exportProds(){
-  if(!products.length){showToast('Nenhum produto para exportar','error');return;}
+  if(!products.length){toast('Nenhum produto para exportar','err');return;}
   var csv='Nome,Categoria,Plataforma,Preço,Custo,Embalagem,Vendas/Mês,Lucro/Unidade,Lucro/Mês,Margem%\n';
   products.forEach(function(p){
     var taxa=p.plat==='shopee'?(p.preco<80?8/Math.max(p.preco,1):p.preco<200?0.10:0.12):p.plat==='ml'?0.17:0.22;
@@ -2988,7 +2988,7 @@ function exportProds(){
   a.href=URL.createObjectURL(blob);
   a.download='produtos_marketagent.csv';
   a.click();
-  showToast('Exportado com sucesso!','success');
+  toast('Exportado com sucesso!');
 }
 
 
